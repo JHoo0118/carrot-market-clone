@@ -4,11 +4,11 @@ interface ItemProps {
   title: string;
   id: number;
   price: number;
-  comments: number;
+  // comments: number;
   hearts: number;
 }
 
-export default function Item({ title, price, comments, hearts, id }: ItemProps) {
+export default function Item({ title, price, hearts, id }: ItemProps) {
   return (
     <Link href={`/products/${id}`}>
       <a className="flex px-4 pt-5 cursor-pointer justify-between">
@@ -37,7 +37,7 @@ export default function Item({ title, price, comments, hearts, id }: ItemProps) 
             </svg>
             <span>{hearts}</span>
           </div>
-          <div className="flex space-x-0.5 items-center text-sm  text-gray-600">
+          {/* <div className="flex space-x-0.5 items-center text-sm  text-gray-600">
             <svg
               className="w-4 h-4"
               fill="none"
@@ -53,7 +53,7 @@ export default function Item({ title, price, comments, hearts, id }: ItemProps) 
               ></path>
             </svg>
             <span>{comments}</span>
-          </div>
+          </div> */}
         </div>
       </a>
     </Link>
