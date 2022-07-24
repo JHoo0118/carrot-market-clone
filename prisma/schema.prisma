@@ -101,6 +101,7 @@ model Review {
   createdById  Int
   createdFor   User     @relation(name: "receivedReviews", fields: [createdForId], references: [id], onDelete: Cascade)
   createdForId Int
+  score        Int      @default(1)
 }
 
 model Sale {
@@ -142,7 +143,6 @@ model Record {
   createdAt DateTime @default(now())
   kind      Kind
   updatedAt DateTime @updatedAt
-  score     Int      @default(1)
 }
 
 enum Kind {
