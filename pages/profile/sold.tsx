@@ -1,14 +1,25 @@
 import type { NextPage } from 'next';
 import Item from '@components/item';
 import Layout from '@components/layout';
+import useSWR from 'swr';
+import { ProductWithCount } from 'pages';
+import ProductList from '@components/product-list';
+
+interface Record {
+  id: number;
+  product: ProductWithCount;
+}
+
+interface ProductListResponse {
+  [key: string]: Record[];
+}
 
 const Sold: NextPage = () => {
+  const { data } = useSWR<ProductListResponse>(`/api/users/me/sales`);
   return (
     <Layout title="판매내역" canGoBack>
       <div className="flex flex-col space-y-5 pb-10  divide-y">
-        {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((_, i) => (
-          <Item id={i} key={i} title="iPhone 14" price={99} comments={1} hearts={1} />
-        ))}
+        <ProductList kind="sales" />
       </div>
     </Layout>
   );
