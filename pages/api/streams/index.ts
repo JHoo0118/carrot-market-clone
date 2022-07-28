@@ -23,7 +23,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseType>) 
     });
     res.json({ ok: true, stream });
   } else if (req.method === 'GET') {
-    const streams = await client.stream.findMany();
+    const {
+      query: { page },
+    } = req;
+    const streams = await client.stream.findMany({
+      take: 20,
+      skip: page ? Number(page) : 0 * 10,
+    });
     res.json({ ok: true, streams });
   }
 }
