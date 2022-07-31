@@ -1,5 +1,6 @@
 import { Stream } from '@prisma/client';
 import type { NextPage } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
@@ -38,7 +39,12 @@ const Stream: NextPage = () => {
         {mergedData?.map((stream) => (
           <Link key={stream.id} href={`/streams/${stream.id}`}>
             <a className="block px-4  pt-4">
-              <div className="relative aspect-video w-full overflow-hidden rounded-md bg-slate-300 shadow-sm" />
+              <div className="w-full relative overflow-hidden rounded-md shadow-sm bg-slate-300 aspect-video">
+                <Image
+                  layout="fill"
+                  src={`https://videodelivery.net/${stream.cloudflareId}/thumbnails/thumbnail.jpg?height=320`}
+                />
+              </div>
               <h1 className="mt-2 text-2xl font-bold text-gray-900">{stream.name}</h1>
             </a>
           </Link>
