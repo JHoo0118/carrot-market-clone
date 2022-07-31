@@ -52,7 +52,6 @@ const Home: NextPage = () => {
           </svg>
         </FloatingButton>
       </div>
-      <Image src={riceCake} placeholder="blur" quality={5} />
     </Layout>
   );
 };
