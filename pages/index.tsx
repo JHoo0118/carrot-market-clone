@@ -1,47 +1,64 @@
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import FloatingButton from '@components/floating-button';
 import Item from '@components/item';
 import Layout from '@components/layout';
-import useUser from '@libs/client/useUser';
+import useUser from '../libs/client/useUser';
 import Head from 'next/head';
-import useSWR from 'swr';
 import { Product } from '@prisma/client';
+import useSWRInfinite, { unstable_serialize } from 'swr/infinite';
+import { useInfiniteScroll } from '@libs/client/useInfiniteScroll';
+import { useEffect } from 'react';
 import client from '@libs/server/client';
+import useSWR, { SWRConfig } from 'swr';
 
-export interface ProductWithCount extends Product {
-  _count: {
-    favs: number;
-  };
+export interface ProductWithFavCount extends Product {
+  _count: { favs: number };
 }
+
 interface ProductsResponse {
   ok: boolean;
-  products: ProductWithCount[];
+  products: ProductWithFavCount[];
+  pages: number;
 }
 
-// const Home: NextPage = () => {
-const Home: NextPage<{ products: ProductWithCount[] }> = ({ products }) => {
+const getKey = (pageIndex: number, previousPageData: ProductsResponse) => {
+  if (previousPageData && !previousPageData.products.length) return null;
+  return `/api/products?page=${pageIndex + 1}`;
+};
+
+const Home: NextPage = () => {
   const { user, isLoading } = useUser();
-  const { data } = useSWR<ProductsResponse>('/api/products');
-  console.log(data);
+
+  // useSWRInfinite 사용법
+  // https://swr.vercel.app/ko/docs/pagination#useswrinfinite
+  const { data, setSize } = useSWRInfinite<ProductsResponse>(getKey);
+
+  const page = useInfiniteScroll();
+
+  useEffect(() => {
+    setSize(page);
+  }, [setSize, page]);
+
   return (
-    <Layout title="홈" hasTabBar>
-      <Head>
-        <title>Home</title>
-      </Head>
-      <div className="flex flex-col space-y-5 divide-y">
-        {products?.map((product) => (
-          <Item
-            id={product.id}
-            key={product.id}
-            title={product.name}
-            price={product.price}
-            // comments={1}
-            hearts={product._count?.favs}
-          />
-        ))}
+    <Layout title="홈" seoTitle="Home" hasTabBar>
+      <div className="flex flex-col mb-5 space-y-5">
+        {data
+          ? data?.map((result) => {
+              return result.products.map((product) => (
+                <Item
+                  id={product?.id}
+                  title={product?.name}
+                  price={product?.price}
+                  hearts={product?._count?.favs || 0}
+                  key={product?.id}
+                  // image={product?.image}
+                />
+              ));
+            })
+          : 'Loading'}
         <FloatingButton href="/products/upload">
           <svg
-            className="h-6 w-6"
+            className="w-6 h-6"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -56,13 +73,49 @@ const Home: NextPage<{ products: ProductWithCount[] }> = ({ products }) => {
   );
 };
 
-export async function getServerSideProps() {
-  const products = await client.product.findMany({});
+const Page: NextPage<ProductsResponse> = ({ products, pages }) => {
+  // unstable_serialize 사용
+  // https://github.com/vercel/swr/issues/1520#issuecomment-933247768
+  return (
+    <SWRConfig
+      value={{
+        fallback: {
+          [unstable_serialize(getKey)]: [
+            {
+              ok: true,
+              products,
+              pages,
+            },
+          ],
+        },
+      }}
+    >
+      <Home />
+    </SWRConfig>
+  );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const products = await client.product.findMany({
+    include: {
+      _count: {
+        select: {
+          favs: true,
+        },
+      },
+    },
+    take: 10,
+    skip: 0,
+  });
+  const productCount = await client.product.count();
+
   return {
     props: {
+      ok: true,
       products: JSON.parse(JSON.stringify(products)),
+      pages: Math.ceil(productCount / 10),
     },
   };
-}
+};
 
-export default Home;
+export default Page;
