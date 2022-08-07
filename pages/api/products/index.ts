@@ -4,25 +4,30 @@ import client from '@libs/server/client';
 import { withApiSession } from '@libs/server/withSession';
 
 async function handler(req: NextApiRequest, res: NextApiResponse<ResponseType>) {
-  const {
-    body: { name, price, description, photoId },
-    session: { user },
-  } = req;
   if (req.method === 'GET') {
-    const products = await client.product.findMany({
-      include: {
-        _count: {
-          select: {
-            favs: true,
+    client.$queryRaw`SET SESSION sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';`.then(
+      async () => {
+        const products = await client.product.findMany({
+          include: {
+            _count: {
+              select: {
+                favs: true,
+              },
+            },
           },
-        },
-      },
-    });
-    res.json({
-      ok: true,
-      products,
-    });
-  } else if (req.method === 'POST') {
+        });
+        res.json({
+          ok: true,
+          products,
+        });
+      }
+    );
+  }
+  if (req.method === 'POST') {
+    const {
+      body: { name, price, description, photoId },
+      session: { user },
+    } = req;
     const product = await client.product.create({
       data: {
         name,

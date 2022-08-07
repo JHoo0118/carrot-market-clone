@@ -8,11 +8,10 @@ import { cls } from '@libs/client/utils';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 // import Bs from "@components/bs";
-
+//@ts-ignore
 const Bs = dynamic(() => new Promise((resolve) => setTimeout(() => resolve(import('@components/bs')), 10000)), {
   ssr: false,
   suspense: true,
-  loading: () => <span>loading</span>,
 });
 
 interface EnterForm {

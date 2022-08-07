@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
 import LoginCheck from '@components/login-check';
+import Script from 'next/script';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -10,6 +11,20 @@ function MyApp({ Component, pageProps }: AppProps) {
         <LoginCheck />
         <Component {...pageProps} />
       </div>
+      <Script src="https://developers.kakao.com/sdk/js/kakao.js" strategy="lazyOnload" />
+      {/* <Script
+        src="https://connect.facebook.net/en_US/sdk.js"
+        onLoad={() => {
+          window.fbAsyncInit = function () {
+            FB.init({
+              appId: 'your-app-id',
+              autoLogAppEvents: true,
+              xfbml: true,
+              version: 'v13.0',
+            });
+          };
+        }}
+      /> */}
     </SWRConfig>
   );
 }
