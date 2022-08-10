@@ -4,6 +4,7 @@ import client from '@libs/server/client';
 import { withApiSession } from '@libs/server/withSession';
 
 async function handler(req: NextApiRequest, res: NextApiResponse<ResponseType>) {
+  await new Promise((resolve) => setTimeout(resolve, 5000));
   if (req.method === 'POST') {
     const {
       body: { question, latitude, longitude },
