@@ -2,8 +2,14 @@ import type { NextPage } from 'next';
 import Item from '@components/item';
 import Layout from '@components/layout';
 import useSWR from 'swr';
-import { ProductWithCount } from 'pages';
 import ProductList from '@components/product-list';
+import { Product } from '@prisma/client';
+
+interface ProductWithCount extends Product {
+  _count: {
+    favs: number;
+  };
+}
 
 interface Record {
   id: number;

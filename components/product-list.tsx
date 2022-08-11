@@ -1,9 +1,16 @@
-import { ProductWithCount } from 'pages';
+// import { ProductWithCount } from "pages";
+import { Product } from '@prisma/client';
 import useSWR from 'swr';
 import Item from './item';
 
 interface ProductListProps {
   kind: 'favs' | 'sales' | 'purchases';
+}
+
+interface ProductWithCount extends Product {
+  _count: {
+    favs: number;
+  };
 }
 
 interface Record {
@@ -26,6 +33,7 @@ export default function ProductList({ kind }: ProductListProps) {
           title={record.product.name}
           price={record.product.price}
           hearts={record.product._count.favs}
+          image={record.product.image}
         />
       ))}
     </>
