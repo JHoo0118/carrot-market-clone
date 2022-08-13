@@ -36,7 +36,6 @@ const ItemDetail: NextPage<ItemDetailResponse> = ({ product, relatedProducts, is
     // mutate("/api/users/me", (prev: any) => ({ ok: !prev.ok }), false);
     toggleFav({});
   };
-  console.log(router.isFallback);
   if (router.isFallback) {
     return (
       <Layout title="Loaidng for youuuuuuu">
@@ -50,7 +49,7 @@ const ItemDetail: NextPage<ItemDetailResponse> = ({ product, relatedProducts, is
         <div className="mb-8">
           <div className="relative  pb-80">
             <Image
-              src={`https://imagedelivery.net/aSbksvJjax-AUC7qVnaC4A/${product.image}/public`}
+              src={`https://imagedelivery.net/I3nSnlW5Zhwjerd3h6xeHg/${product.image}/public`}
               className="bg-slate-300 object-cover"
               layout="fill"
             />
@@ -59,7 +58,7 @@ const ItemDetail: NextPage<ItemDetailResponse> = ({ product, relatedProducts, is
             <Image
               width={48}
               height={48}
-              src={`https://imagedelivery.net/aSbksvJjax-AUC7qVnaC4A/${product?.user?.avatar}/avatar`}
+              src={`https://imagedelivery.net/I3nSnlW5Zhwjerd3h6xeHg/${product?.user?.avatar}/avatar`}
               className="w-12 h-12 rounded-full bg-slate-300"
             />
             <div>
