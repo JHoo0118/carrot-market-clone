@@ -107,7 +107,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     take: 10,
     skip: 0,
   });
-  await new Promise((resolve) => setTimeout(resolve, 5000));
   const productCount = await client.product.count();
 
   return {
