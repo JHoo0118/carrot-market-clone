@@ -14,9 +14,9 @@ export function middleware(req: NextRequest, ev: NextFetchEvent) {
     !req.nextUrl.pathname.startsWith('/_next/static')
   ) {
     if (!req.nextUrl.pathname.startsWith('/enter') && !req.cookies.get('carrotsession')) {
-      const url = req.nextUrl.clone();
-      url.pathname = '/enter';
-      return NextResponse.redirect(url);
+      // const url = req.nextUrl.clone();
+      // url.pathname = '/enter';
+      return NextResponse.redirect(new URL('/enter', req.url));
     }
   }
 
